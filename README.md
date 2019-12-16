@@ -13,4 +13,4 @@ pm2 start ecosystem.config.js
 
 然后访问 `localhost:8000`就可以看到聊天机器人画面了。
 
-![example.png](/images/example.png)
+![example.png](./images/example.png)
