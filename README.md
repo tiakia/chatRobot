@@ -15,4 +15,4 @@ pm2 start ecosystem.config.js
 
 ![example.png](https://github.com/tiakia/chatRobot/blob/master/images/example.png)
 
-![example2.png](https://github.com/tiakia/chatRobot/blob/master/images/example1.png)
+![example2.png](https://github.com/tiakia/chatRobot/blob/master/images/example2.png)
