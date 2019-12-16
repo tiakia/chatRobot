@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+
+    <title>Title</title>
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    /* 隐藏滚动条 */
+    ::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+      background-color: rgba(240, 240, 240, 1);
+    }
+    #content {
+      padding: 10px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .itemA,
+    .itemB {
+      padding: 8px;
+      font-size: 16px;
+      display: flex;
+      flex-direction: row;
+    }
+    .itemB {
+      justify-content: flex-end;
+    }
+    .message {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 6px 15px;
+    }
+    .itemA .message {
+      position: relative;
+      border-color: #ddd;
+      background-color: #ddd;
+    }
+    .itemB .message {
+      background-color: green;
+      color: #fff;
+      border-color: green;
+      position: relative;
+    }
+    .itemB .message::after,
+    .itemA .message::before {
+      content: "";
+      display: block;
+      border: 10px solid transparent;
+      position: absolute;
+    }
+    .itemB .message::after {
+      border-left-color: green;
+      bottom: 6px;
+      right: -20px;
+    }
+    .itemA .message::before {
+      border-right-color: #ddd;
+      bottom: 6px;
+      left: -20px;
+    }
+  </style>
+  <body>
+    <div id="content">
+      <div class="itemA">
+        <span class="message">你好，欢迎光临红浪漫！</span>
+      </div>
+    </div>
+    <script>
+      (function() {
+        let content = document.getElementById("content");
+
+        // 图灵机器人调用地址
+        /* let api = "http://openapi.tuling123.com/openapi/api/v2";
+         * let reqBody = {
+         *   reqType: 0,
+         *   userInfo: {
+         *     apiKey: "eab93480f9d44aa18b918bd8ca10cf4e",
+         *     userId: "dab22abeefba99ec"
+         *   }
+         * }; */
+
+        function isScroll(ele) {
+          if (ele.offsetTop >= document.documentElement.clientHeight - 50) {
+            window.scrollTo({
+              top: ele.offsetTop,
+              behavior: "smooth"
+            });
+          }
+        }
+        // 请求图灵机器人
+        /* fetch(api, {
+         *   body: JSON.stringify({
+         *     ...reqBody,
+         *     perception: {
+         *       inputText: {
+         *         text: "1"
+         *       }
+         *     }
+         *   }),
+         *   method: "POST",
+         *   mode: "no-cors"
+         * }).then(res => console.log(res)); */
+
+        window.addEventListener(
+          "message",
+          async event => {
+            // console.log(event);
+            if (event.origin === "http://localhost:8000") {
+              // 接受的消息显示
+              let div = document.createElement("div");
+              div.className = "itemB";
+              let span = document.createElement("span");
+              span.className = "message";
+              span.innerText = event.data;
+              div.appendChild(span);
+              content.appendChild(div);
+              isScroll(div);
+
+              // 返回消息显示
+              let returnMsg = await fetchChat(event.data);
+              let reDiv = document.createElement("div");
+              reDiv.className = "itemA";
+              let reSpan = document.createElement("span");
+              reSpan.className = "message";
+              reSpan.innerText = returnMsg;
+              reDiv.appendChild(reSpan);
+              content.appendChild(reDiv);
+              isScroll(reDiv);
+              event.source.postMessage(returnMsg, event.origin);
+            }
+          },
+          false
+        );
+      })();
+      const fetchChat = async function(text) {
+        let res = await fetch("/chat", {
+          method: "POST",
+          body: JSON.stringify({
+            data: text.trim()
+          })
+        });
+        let result = await res.json();
+        // console.log(result);
+        return (
+          result &&
+          result.data &&
+          result.data &&
+          result.data.answer &&
+          result.data.answer
+        );
+      };
+    </script>
+  </body>
+</html>

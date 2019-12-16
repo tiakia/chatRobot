@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      #container {
+        max-width: 425px;
+        min-width: 320px;
+        margin: 0 auto;
+        border: 1px solid #f2f2f2;
+        border-radius: 5px;
+        height: 100vh;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+      nav {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        color: #fff;
+        background-color: salmon;
+        text-align: center;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+
+      #pageA {
+        flex: 1;
+        border: none;
+      }
+      #inputBox {
+        width: 100%;
+        height: 50px;
+        display: flex;
+        flex-direction: row;
+      }
+      #inputBox input {
+        border: 0;
+        flex: 1;
+        height: 40px;
+        border-top: 1px solid #f2f2f2;
+        outline: none;
+        padding-left: 10px;
+      }
+      #inputBox button {
+        border: 0;
+        width: 100px;
+        height: 40px;
+        background-color: salmon;
+        color: #fff;
+        outline: none;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <nav>postMessage</nav>
+      <iframe id="pageA" src="http://localhost:8001/a.html"></iframe>
+      <div id="inputBox">
+        <input id="input" /><button id="btn">发送</button>
+      </div>
+    </div>
+    <script>
+      // 不加window.onload的话被报错
+      window.onload = () => {
+        let domin = "http://localhost:8001";
+        let input = document.getElementById("input");
+        let btn = document.getElementById("btn");
+
+        btn.addEventListener(
+          "click",
+          () => {
+            if (input.value) {
+              popup.postMessage(input.value, domin);
+              input.value = "";
+            }
+          },
+          false
+        );
+        //绑定回车事件
+        document.onkeydown = function(e) {
+          if (e.keyCode === 13) {
+            btn.click();
+          }
+        };
+        // window.open方式获取引用
+        // const popup = window.open("http://localhost:8000/a.html");
+        // iframe 方式获取引用
+        const popup = document.getElementById("pageA").contentWindow;
+        // 发送初始消息
+        // popup.postMessage("你好", domin);
+
+        window.addEventListener(
+          "message",
+          event => {
+            if (event.origin === domin) {
+              console.log("received message: ", event.data);
+            }
+          },
+          false
+        );
+      };
+    </script>
+  </body>
+</html>
